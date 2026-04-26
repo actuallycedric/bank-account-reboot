@@ -1,8 +1,8 @@
 package com.clarence.project_6b.controller;
 
-import com.clarence.project_6b.dto.AccountResponse;
-import com.clarence.project_6b.dto.CreateAccountRequest;
+import com.clarence.project_6b.dto.*;
 import com.clarence.project_6b.model.Account;
+import com.clarence.project_6b.model.Transaction;
 import com.clarence.project_6b.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +38,31 @@ public class AccountController {
     public AccountResponse createAccount(@RequestBody CreateAccountRequest req){
         return accountService.createAccount(req);
     }
+
+    @DeleteMapping("/accounts/{id}")
+    public String closeAccount(@PathVariable int id){
+        return accountService.closeAccount(id);
+    }
+
+    @GetMapping("/accounts/{id}/transactions")
+    public List<TransactionResponse> getAllTransactionsById(@PathVariable int id){
+        return accountService.getAllTransactionsById(id);
+    }
+
+    @PostMapping("/accounts/{id}/deposit")
+    public AccountResponse deposit(@PathVariable int id, @RequestBody BalanceChangeRequest req){
+        return accountService.deposit(req, id);
+    }
+
+    @PostMapping("/accounts/{id}/withdraw")
+    public AccountResponse withdraw(@PathVariable int id, @RequestBody BalanceChangeRequest req){
+        return accountService.withdraw(req, id);
+    }
+
+    @PostMapping("/accounts/{senderId}/transfer")
+    public List<AccountResponse> transfer(@PathVariable int senderId, @RequestBody TransferRequest req){
+        return accountService.transfer(req, senderId);
+    }
+
+
 }

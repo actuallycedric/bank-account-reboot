@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class AccountExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> handleNotFound(AccountNotFoundException e){
+    public ResponseEntity<ExceptionResponse> handleNotFound(ResourceNotFoundException e){
         ExceptionResponse response = new ExceptionResponse();
 
         response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -19,5 +19,16 @@ public class AccountExceptionHandler {
         response.setTimestamp(LocalDateTime.now());
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> handleNotFound(AccountViolationException e){
+        ExceptionResponse response = new ExceptionResponse();
+
+        response.setStatus(HttpStatus.CONFLICT.value());
+        response.setMessage(e.getMessage());
+        response.setTimestamp(LocalDateTime.now());
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }

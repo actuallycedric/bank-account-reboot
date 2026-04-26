@@ -14,6 +14,7 @@ public class Transaction {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="transaction_type")
     private TransactionType type;
 
