@@ -115,7 +115,7 @@ public class AccountService {
 
         // update account balance
         Account a = accountWrapper.get();
-        BigDecimal addend = new BigDecimal(req.getAmount());
+        BigDecimal addend = req.getAmount();
         BigDecimal amount = a.getBalance().add(addend);
         a.setBalance(amount);
 
@@ -126,7 +126,7 @@ public class AccountService {
         t.setAmount(addend);
         t.setTime(LocalDateTime.now());
         t.setDescription(req.getDescription());
-        t.setAccountId(a);
+        t.setAccount(a);
 
         // merge changes
         accountRepository.save(a);
@@ -144,7 +144,7 @@ public class AccountService {
 
         // update account balance
         Account a = accountWrapper.get();
-        BigDecimal amountToWithdraw = new BigDecimal(req.getAmount());
+        BigDecimal amountToWithdraw = req.getAmount();
 
         if(a.getBalance().compareTo(amountToWithdraw) < 0) throw new AccountViolationException("You can't withdraw an amount more than your balance!");
 
@@ -158,7 +158,7 @@ public class AccountService {
         t.setAmount(amountToWithdraw);
         t.setTime(LocalDateTime.now());
         t.setDescription(req.getDescription());
-        t.setAccountId(a);
+        t.setAccount(a);
 
         // merge changes
         accountRepository.save(a);
@@ -173,19 +173,25 @@ public class AccountService {
         Optional<Account> accountWrapper = accountRepository.findById(senderId);
         Optional<Account> recipientAccountWrapper = accountRepository.findById(req.getRecipientAccount());
         
-        if(accountWrapper.isEmpty() || recipientAccountWrapper.isEmpty()) throw new AccountNotFoundException("Cannot find an account with id " + senderId + "!");
+        if(accountWrapper.isEmpty()) throw new AccountNotFoundException("Cannot find an account with id " + senderId + "!");
+        if(recipientAccountWrapper.isEmpty()) throw new AccountNotFoundException("Cannot find an account with id " + req.getRecipientAccount() + "!");
 
         Account sender = accountWrapper.get();
         Account receiver = recipientAccountWrapper.get();
 
 
         // adjust balances
-        BigDecimal amountTransferred = new BigDecimal(req.getAmount());
+        BigDecimal amountTransferred = req.getAmount();
+
 
         BigDecimal senderBalance = sender.getBalance().subtract(amountTransferred);
+
+        if(senderBalance.compareTo(BigDecimal.ZERO) < 0) throw new AccountViolationException("You can't withdraw more than your balance!");
+
         sender.setBalance(senderBalance);
 
         BigDecimal receiverBalance = receiver.getBalance().add(amountTransferred);
+
         receiver.setBalance(receiverBalance);
 
         // log transaction
@@ -194,7 +200,7 @@ public class AccountService {
         t.setAmount(amountTransferred);
         t.setTime(LocalDateTime.now());
         t.setDescription(req.getDescription());
-        t.setAccountId(sender);
+        t.setAccount(sender);
 
         // merge changes
         accountRepository.save(sender);

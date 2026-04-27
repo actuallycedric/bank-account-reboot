@@ -1,18 +1,28 @@
 package com.clarence.project_6b.dto;
 
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
+
 public class TransferRequest {
 
-    private String amount;
+    @NotNull
+    @Positive
+    private BigDecimal amount;
+
     private String description;
+
     private int recipientAccount;
 
     public TransferRequest(){}
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

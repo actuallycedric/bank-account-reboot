@@ -1,17 +1,26 @@
 package com.clarence.project_6b.dto;
 
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
+
 public class BalanceChangeRequest {
-    private String amount;
+
+    @NotNull
+    @Positive
+    private BigDecimal amount;
+
     private String description;
 
     BalanceChangeRequest(){}
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

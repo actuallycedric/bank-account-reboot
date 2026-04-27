@@ -1,6 +1,7 @@
 package com.clarence.project_6b.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(name="amount")
+    @Positive
     private BigDecimal amount;
 
     @Column(name="time")
@@ -73,11 +75,11 @@ public class Transaction {
         this.description = description;
     }
 
-    public Account getAccountId() {
+    public Account getAccount() {
         return accountId;
     }
 
-    public void setAccountId(Account accountId) {
+    public void setAccount(Account accountId) {
         this.accountId = accountId;
     }
 

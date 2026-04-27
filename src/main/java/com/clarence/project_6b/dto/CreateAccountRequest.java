@@ -1,10 +1,21 @@
 package com.clarence.project_6b.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
 import java.math.BigDecimal;
 
 public class CreateAccountRequest {
+
+    @NotNull
     private String firstName;
+
+    @NotNull
     private String lastName;
+
+    @NotNull
+    @PositiveOrZero
     private BigDecimal initialDeposit;
 
     CreateAccountRequest(){}
