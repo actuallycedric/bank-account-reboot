@@ -14,6 +14,7 @@ public class TransferRequest {
 
     private String description;
 
+    @NotNull
     private int recipientAccount;
 
     public TransferRequest(){}

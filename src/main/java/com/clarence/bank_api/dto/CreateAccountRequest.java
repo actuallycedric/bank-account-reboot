@@ -1,5 +1,6 @@
 package com.clarence.bank_api.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -8,17 +9,17 @@ import java.math.BigDecimal;
 
 public class CreateAccountRequest {
 
-    @NotNull
+    @NotBlank
     private String firstName;
 
-    @NotNull
+    @NotBlank
     private String lastName;
 
     @NotNull
     @PositiveOrZero
     private BigDecimal initialDeposit;
 
-    CreateAccountRequest(){}
+    public CreateAccountRequest(){}
 
     public String getFirstName() {
         return firstName;

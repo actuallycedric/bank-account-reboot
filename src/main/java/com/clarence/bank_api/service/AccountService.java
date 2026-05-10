@@ -10,16 +10,19 @@ import com.clarence.bank_api.repository.AccountRepository;
 import com.clarence.bank_api.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -41,6 +44,18 @@ public class AccountService {
         response.setLastName(a.getLastName());
 
         return response;
+    }
+
+    public TransactionResponse parseToTransactionResponse(Transaction t){
+        TransactionResponse responseObject = new TransactionResponse();
+
+        responseObject.setAmount(t.getAmount());
+        responseObject.setDescription(t.getDescription());
+        responseObject.setId(t.getId());
+        responseObject.setTime(t.getTime());
+        responseObject.setType(t.getType());
+
+        return responseObject;
     }
 
     public List<Account> findAll(){
@@ -70,7 +85,7 @@ public class AccountService {
     }
 
     @Transactional
-    public String closeAccount(int id){
+    public ResponseEntity<String> closeAccount(int id){
         Optional<Account> accountWrapper = accountRepository.findById(id);
         if(accountWrapper.isEmpty()) throw new AccountNotFoundException("Cannot find an account with id " + id + "!");
 
@@ -80,32 +95,30 @@ public class AccountService {
 
         accountRepository.delete(a);
 
-        return "The account has been closed. Sorry to see you go!";
+        return new ResponseEntity<>("The account has been closed. Sorry to see you go!", HttpStatus.NO_CONTENT);
     }
 
-    public List<TransactionResponse> getAllTransactionsById(int id){
+    public PaginationResponse getAllTransactionsById(int id, int page, int size){
 
         Optional<Account> key = accountRepository.findById(id);
         if(key.isEmpty()) throw new AccountNotFoundException("Cannot find an account with id " + id + "!");
+        Account a = key.get();
+
+        Sort sort = Sort.by("time").ascending();
+        Pageable pageReq = PageRequest.of(page, size, sort);
+
+        Page<TransactionResponse> paginatedResult = transactionRepository.findByAccountId(a, pageReq).map(this::parseToTransactionResponse);
+
+        PaginationResponse p = new PaginationResponse();
+        p.setCurrentPage(page);
+        p.setLeftoverPages(paginatedResult.getTotalPages()-1);
+        p.setTotalTransactions(paginatedResult.getTotalElements());
+        p.setContent(paginatedResult.stream().collect(Collectors.toList()));
+        p.setHasNext(paginatedResult.hasNext());
+
+        return p;
 
 
-        List<Transaction> resource = transactionRepository.findByAccountId(key.get());
-
-        List<TransactionResponse> response = new ArrayList<>();
-
-        resource.forEach(t -> {
-            TransactionResponse responseObject = new TransactionResponse();
-
-            responseObject.setAmount(t.getAmount());
-            responseObject.setDescription(t.getDescription());
-            responseObject.setId(t.getId());
-            responseObject.setTime(t.getTime());
-            responseObject.setType(t.getType());
-
-            response.add(responseObject);
-        });
-
-        return response;
     }
 
     @Transactional
@@ -148,7 +161,7 @@ public class AccountService {
         Account a = accountWrapper.get();
         BigDecimal amountToWithdraw = req.getAmount();
 
-        if(a.getBalance().compareTo(amountToWithdraw) < 0) throw new AccountViolationException("You can't withdraw an amount more than your balance!");
+        if(a.getBalance().compareTo(amountToWithdraw) < 0) throw new AccountViolationException("You can't withdraw more than your balance!");
 
         BigDecimal amount = a.getBalance().subtract(amountToWithdraw);
         a.setBalance(amount);
@@ -171,7 +184,9 @@ public class AccountService {
 
     @Transactional
     public List<AccountResponse> transfer(TransferRequest req, int senderId){
-        
+
+        if(req.getRecipientAccount() == senderId) throw new AccountViolationException("Your sender id must be different from the recipient id!");
+
         Optional<Account> accountWrapper = accountRepository.findById(senderId);
         Optional<Account> recipientAccountWrapper = accountRepository.findById(req.getRecipientAccount());
         

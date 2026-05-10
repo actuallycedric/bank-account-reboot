@@ -14,7 +14,7 @@ public class BalanceChangeRequest {
 
     private String description;
 
-    BalanceChangeRequest(){}
+    public BalanceChangeRequest(){}
 
     public BigDecimal getAmount() {
         return amount;
