@@ -1,14 +1,14 @@
-Prerequisites
+# Prerequisites
 Java 21 JDK
 Maven 3.9.15
 PostgreSQL 16 or later
 
-Database Creation
-Create the database
+# Database Creation
+## Create the database
 
 CREATE DATABASE bank;
 
-Create the tables
+## Create the tables
 
 create table account (
 id INTEGER GENERATED ALWAYS AS IDENTITY primary key not null,
@@ -28,7 +28,7 @@ account_id INTEGER references account(id) on delete CASCADE
 );
 
 
-Grant the appropriate privileges to a user to perform read/write operations on the database
+## Grant the appropriate privileges to a user to perform read/write operations on the database
 
 CREATE USER your_user WITH PASSWORD ‘your_password’;
 
@@ -36,7 +36,7 @@ GRANT ALL PRIVILEGES ON DATABASE bank to your_user;
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO your_user;
 
-Configuration
+# Configuration
 
 In the application.properties file in the source directory, a few adjustments must be made to allow the PostgreSQL driver to communicate with JPARepository.
 
@@ -47,7 +47,7 @@ bash
 mvn clean install -U
 mvn spring-boot:run
 
-Running the tests
+# Running the tests
 
 To run the integration tests, you must have an instance of Docker Desktop open so that the PostgreSQL Testcontainer can be made.
 
@@ -55,14 +55,14 @@ To run the integration tests, you must have an instance of Docker Desktop open s
 bash
 mvn test
 
-API reference
-Get All Accounts
+# API reference
+## Get All Accounts
 GET /accounts
 Response 200 OK:
 json
 [your example here]
 
-Get Account by ID
+## Get Account by ID
 GET /accounts/{id}
 [your description]
 Response 200 OK:
@@ -71,7 +71,7 @@ json
 Errors:
 404 — [when]
 
-Create Account
+## Create Account
 POST /accounts
 [your description]
 Request Body:
@@ -83,7 +83,7 @@ json
 Errors:
 400 — [when]
 
-Deposit
+## Deposit
 POST /accounts/{id}/deposit
 [your description]
 Request Body:
@@ -96,7 +96,7 @@ Errors:
 400 — [when]
 404 — [when]
 
-Withdraw
+## Withdraw
 POST /accounts/{id}/withdraw
 [your description]
 Request Body:
@@ -110,7 +110,7 @@ Errors:
 404 — [when]
 409 — [when]
 
-Transfer
+## Transfer
 POST /accounts/{id}/transfer
 [your description]
 Request Body:
@@ -124,7 +124,7 @@ Errors:
 404 — [when]
 409 — [when]
 
-Get Transaction History
+## Get Transaction History
 GET /accounts/{id}/transactions
 [your description]
 Query Parameters: page, size (optional)
@@ -134,7 +134,7 @@ json
 Errors:
 404 — [when]
 
-Close Account
+## Close Account
 DELETE /accounts/{id}
 [your description]
 Response 204 No Content
