@@ -85,7 +85,7 @@ Response 200 OK:
 }
 ```
 
-Optional: Returns a list of all accounts in the database paginated, 
+Optional: Returns a list of all accounts in the database paginated,
 using the request parameters `/accounts?page={page_number}&size={size_of_page}`
 
 
