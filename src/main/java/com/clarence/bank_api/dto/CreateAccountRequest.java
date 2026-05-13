@@ -9,14 +9,14 @@ import java.math.BigDecimal;
 
 public class CreateAccountRequest {
 
-    @NotBlank
+    @NotBlank(message="Your first name cannot be left blank!")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message="Your last name cannot be left blank!")
     private String lastName;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message="Your deposit must be a valid number!")
+    @PositiveOrZero(message="Your deposit must be greater than or equal to zero!")
     private BigDecimal initialDeposit;
 
     public CreateAccountRequest(){}

@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 
 public class TransferRequest {
 
-    @NotNull
-    @Positive
+    @NotNull(message="The amount must be a valid number!")
+    @Positive(message="The amount must be positive!")
     private BigDecimal amount;
 
     private String description;
 
-    @NotNull
+    @NotNull(message="You must specify a recipient account!")
     private int recipientAccount;
 
     public TransferRequest(){}

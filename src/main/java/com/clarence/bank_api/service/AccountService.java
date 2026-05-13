@@ -58,10 +58,6 @@ public class AccountService {
         return responseObject;
     }
 
-    public List<Account> findAll(){
-        return accountRepository.findAll();
-    }
-
     public ResponseEntity<AccountResponse> findById(int id){
         Optional<Account> a = accountRepository.findById(id);
 
@@ -95,10 +91,10 @@ public class AccountService {
 
         accountRepository.delete(a);
 
-        return new ResponseEntity<>("The account has been closed. Sorry to see you go!", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
     }
 
-    public PaginationResponse getAllTransactionsById(int id, int page, int size){
+    public PaginationResponse<TransactionResponse> getAllTransactionsById(int id, int page, int size){
 
         Optional<Account> key = accountRepository.findById(id);
         if(key.isEmpty()) throw new AccountNotFoundException("Cannot find an account with id " + id + "!");
@@ -109,16 +105,33 @@ public class AccountService {
 
         Page<TransactionResponse> paginatedResult = transactionRepository.findByAccountId(a, pageReq).map(this::parseToTransactionResponse);
 
-        PaginationResponse p = new PaginationResponse();
+        PaginationResponse<TransactionResponse> p = new PaginationResponse<>();
         p.setCurrentPage(page);
         p.setLeftoverPages(paginatedResult.getTotalPages()-1);
-        p.setTotalTransactions(paginatedResult.getTotalElements());
+        p.setTotalElements(paginatedResult.getTotalElements());
         p.setContent(paginatedResult.stream().collect(Collectors.toList()));
         p.setHasNext(paginatedResult.hasNext());
 
         return p;
+    }
 
+    public PaginationResponse<AccountResponse> findAll(int page, int size){
+        List<Account> list = accountRepository.findAll();
 
+        Sort sort = Sort.by("id").ascending();
+
+        Pageable pageReq = PageRequest.of(page, size, sort);
+
+        Page<AccountResponse> paginatedResult = accountRepository.findAll(pageReq).map(this::parseToResponseBody);
+
+        PaginationResponse<AccountResponse> p = new PaginationResponse<>();
+        p.setCurrentPage(page);
+        p.setLeftoverPages(paginatedResult.getTotalPages()-1);
+        p.setTotalElements(paginatedResult.getTotalElements());
+        p.setContent(paginatedResult.stream().collect(Collectors.toList()));
+        p.setHasNext(paginatedResult.hasNext());
+
+        return p;
     }
 
     @Transactional

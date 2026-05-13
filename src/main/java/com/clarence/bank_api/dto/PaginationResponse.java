@@ -2,26 +2,26 @@ package com.clarence.bank_api.dto;
 
 import java.util.List;
 
-public class PaginationResponse {
+public class PaginationResponse<T> {
 
-    long totalTransactions;
+    long totalElements;
 
     int currentPage;
 
     int leftoverPages;
 
-    List<TransactionResponse> content;
+    List<T> content;
 
     boolean hasNext;
 
     public PaginationResponse(){}
 
-    public long getTotalTransactions() {
-        return totalTransactions;
+    public long getTotalElements() {
+        return totalElements;
     }
 
-    public void setTotalTransactions(long totalTransactions) {
-        this.totalTransactions = totalTransactions;
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
     }
 
     public int getCurrentPage() {
@@ -40,11 +40,11 @@ public class PaginationResponse {
         this.leftoverPages = leftoverPages;
     }
 
-    public List<TransactionResponse> getContent() {
+    public List<T> getContent() {
         return content;
     }
 
-    public void setContent(List<TransactionResponse> content) {
+    public void setContent(List<T> content) {
         this.content = content;
     }
 

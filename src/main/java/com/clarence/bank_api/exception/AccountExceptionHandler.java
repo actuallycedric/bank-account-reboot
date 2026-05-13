@@ -38,7 +38,7 @@ public class AccountExceptionHandler {
         ExceptionResponse response = new ExceptionResponse();
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage(e.getMessage());
+        response.setMessage(e.getBindingResult().getFieldErrors().getFirst().getDefaultMessage());
         response.setTimestamp(LocalDateTime.now());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

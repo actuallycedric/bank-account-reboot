@@ -28,8 +28,9 @@ public class AccountController {
     }
 
     @GetMapping("/accounts")
-    public List<Account> findAllAccounts(){
-        return accountService.findAll();
+    public PaginationResponse findAllAccounts(@RequestParam(defaultValue="0") int page,
+                                              @RequestParam(defaultValue="5") int size){
+        return accountService.findAll(page, size);
     }
 
     @GetMapping("/accounts/{id}")
