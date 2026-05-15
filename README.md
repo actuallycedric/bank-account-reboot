@@ -2,6 +2,7 @@
 - Java 21 JDK
 - Maven 3.9.15
 - PostgreSQL 16 or later
+- Docker Desktop
 
 # Database Creation
 1. Create the database
