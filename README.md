@@ -71,7 +71,10 @@ mvn test
 
 # API reference
 ## Get All Accounts
+
+```
 GET /accounts
+```
 
 Returns a list of all accounts in the database
 
@@ -120,13 +123,13 @@ Response 200 OK:
 ```
 
 ## Get Account by ID
+```
 GET /accounts/{id}
-
+```
 Returns a specific account based on the `id` path variable
 
 Response 200 OK:
 
-`GET /accounts/1`
 ```json
 {
   "id": 1,
@@ -140,7 +143,9 @@ Errors:
 404 — Occurs when no account matches the specified ID
 
 ## Create Account
+```
 POST /accounts
+```
 
 Creates an account. The request body must provide the first name, last name, and initial deposit.
 
@@ -167,8 +172,9 @@ Errors:
 
 
 ## Deposit
+```
 POST /accounts/{id}/deposit
-
+```
 Creates a deposit request. The request body must include the amount to deposit, as well as an optional description, to be logged in a Transaction object.
 Request Body:
 ```json
@@ -197,8 +203,9 @@ Errors:
 
 409 — Occurs when the input data is malformed, such as a negative withdrawal amount.
 ## Withdraw
+```
 POST /accounts/{id}/withdraw
-
+```
 Creates a withdraw request, which has the same behaviour as the deposit request (positive deposit amount, optional description).
 
 Request Body:
@@ -226,8 +233,9 @@ Errors:
 409 — Occurs when the input data is malformed, such as a negative withdrawal amount.
 
 ## Transfer
+```
 POST /accounts/{id}/transfer
-
+```
 Creates a transfer request. The request body should include the amount to transfer, an optional description, and the ID of the recipient account.
 
 Request Body:
@@ -266,7 +274,9 @@ Errors:
 409 — Occurs if the account is trying to transfer negative money, zero money, or if the recipient ID is the same as the sender's ID.
 
 ## Get Transaction History
+```
 GET /accounts/{id}/transactions
+```
 
 Returns a list of all transactions linked to a specific account, with optional pagination parameters (page, size).
 
@@ -306,7 +316,9 @@ Errors:
 404 — Occurs when the target ID doesn't match an existing account.
 
 ## Close Account
+```
 DELETE /accounts/{id}
+```
 
 Closes an account by deleting its data as well as any transaction history linked to the account.
 
